@@ -27,7 +27,7 @@ public class WebController {
         this.searchEngineClient = searchEngineClient;
     }
 
-    @RequestMapping(path="controlPanel", method = RequestMethod.GET)
+    @RequestMapping(path="/", method = RequestMethod.GET)
     public String controlPanel() {
         return "controlPanel";
     }
@@ -35,7 +35,7 @@ public class WebController {
     @RequestMapping(path="addDocument", method = RequestMethod.POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
     public String addDocument(String key, String value) throws DocumentAddingException {
         searchEngineClient.addDocument(key, value);
-        return "redirect:/controlPanel";
+        return "redirect:/";
     }
 
     @ResponseBody

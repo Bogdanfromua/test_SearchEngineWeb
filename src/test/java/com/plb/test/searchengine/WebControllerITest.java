@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,28 +32,53 @@ public class WebControllerITest {
     private MockMvc mvc;
 
     @Test
-    @DirtiesContext
-    public void addDocument() throws Exception {
+    public void getDocument_notAuthorized() throws Exception {
+        mvc.perform(
+                get("/getDocument")
+                        .param("key", "key1")
+                        .accept(MediaType.TEXT_PLAIN)
+        )
+                .andExpect(status().is(401));
+    }
+
+    @Test
+    public void addAndGetDocument_notAuthorized() throws Exception {
+        String value = "testValue";
+        String key = "test";
+
         mvc.perform(
                 post("/addDocument")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .content(EntityUtils.toString(new UrlEncodedFormEntity(asList(
-                                new BasicNameValuePair("key", "key1"),
-                                new BasicNameValuePair("value", "value1")
-                        )))));
+                                new BasicNameValuePair("key", key),
+                                new BasicNameValuePair("value", value)
+                        )))))
+                .andExpect(status().is(401));
     }
 
     @Test
+    public void findDocuments_notAuthorized() throws Exception {
+        mvc.perform(
+                get("/findDocuments")
+                        .param("query", "testValue")
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is(401));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
     public void getDocument_nonExist() throws Exception {
         mvc.perform(
                 get("/getDocument")
                         .param("key", "key1")
-                        .accept(MediaType.TEXT_PLAIN))
+                        .accept(MediaType.TEXT_PLAIN)
+        )
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @DirtiesContext
+    @WithMockUser(username = "user")
     public void addAndGetDocument() throws Exception {
         String value = "testValue";
         String key = "test";
@@ -63,7 +89,8 @@ public class WebControllerITest {
                         .content(EntityUtils.toString(new UrlEncodedFormEntity(asList(
                                 new BasicNameValuePair("key", key),
                                 new BasicNameValuePair("value", value)
-                        )))));
+                        )))))
+                .andExpect(status().is3xxRedirection());
 
         mvc.perform(
                 get("/getDocument")
@@ -74,6 +101,7 @@ public class WebControllerITest {
     }
 
     @Test
+    @WithMockUser(username = "user")
     public void findDocuments_emptySet() throws Exception {
         mvc.perform(
                 get("/findDocuments")
@@ -85,6 +113,7 @@ public class WebControllerITest {
 
     @Test
     @DirtiesContext
+    @WithMockUser(username = "user")
     public void findDocuments() throws Exception {
         String value = "testValue";
         String key = "test";
@@ -95,7 +124,8 @@ public class WebControllerITest {
                         .content(EntityUtils.toString(new UrlEncodedFormEntity(asList(
                                 new BasicNameValuePair("key", key),
                                 new BasicNameValuePair("value", value)
-                        )))));
+                        )))))
+                .andExpect(status().is3xxRedirection());
         mvc.perform(
                 get("/findDocuments")
                         .param("query", value)

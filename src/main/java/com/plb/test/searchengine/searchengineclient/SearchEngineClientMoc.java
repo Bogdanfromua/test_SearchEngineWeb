@@ -21,7 +21,6 @@ public class SearchEngineClientMoc implements SearchEngineClient {
     }
 
     public Collection<String> findDocuments(String query) {
-        //TODO
         return documentsTp.keySet();
     }
 }
