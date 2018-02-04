@@ -11,7 +11,12 @@ group 'com.plb.test.searchengine'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'war'
 apply plugin: 'org.springframework.boot'
+
+war {
+    baseName = 'searchEngineWeb'
+}
 
 sourceCompatibility = 1.8
 
@@ -22,4 +27,7 @@ repositories {
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     testCompile("org.springframework.boot:spring-boot-starter-test")
+    compile("javax.servlet:jstl")
+    compile("org.apache.tomcat.embed:tomcat-embed-jasper")
+    testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
 }
