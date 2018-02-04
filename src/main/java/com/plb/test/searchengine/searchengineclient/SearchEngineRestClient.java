@@ -25,12 +25,18 @@ import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 @Profile("default")
 public class SearchEngineRestClient implements SearchEngineClient {
 
-    @Autowired
-    RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+    private final String searchEngineURL;
 
-    //TODO
-    @Value("http://localhost:8080")
-    String searchEngineURL;
+    @Autowired
+    public SearchEngineRestClient(
+            RestTemplate restTemplate,
+            @Value("#{systemProperties['searchEngineURL'] ?: \"http://localhost:80\"}")
+            String searchEngineURL
+    ) {
+        this.restTemplate = restTemplate;
+        this.searchEngineURL = searchEngineURL;
+    }
 
     private URI buildDocumentUrl(String key) {
         return fromUriString(searchEngineURL)

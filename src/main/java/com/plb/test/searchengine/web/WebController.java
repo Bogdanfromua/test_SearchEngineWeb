@@ -20,18 +20,22 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 @RequestMapping("/")
 public class WebController {
 
+    private final SearchEngineClient searchEngineClient;
+
     @Autowired
-    SearchEngineClient searchEngineClient;
+    public WebController(SearchEngineClient searchEngineClient) {
+        this.searchEngineClient = searchEngineClient;
+    }
 
     @RequestMapping(path="controlPanel", method = RequestMethod.GET)
     public String controlPanel() {
         return "controlPanel";
     }
 
-    @ResponseBody
     @RequestMapping(path="addDocument", method = RequestMethod.POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
-    public void addDocument(String key, String value) throws DocumentAddingException {
+    public String addDocument(String key, String value) throws DocumentAddingException {
         searchEngineClient.addDocument(key, value);
+        return "redirect:/controlPanel";
     }
 
     @ResponseBody

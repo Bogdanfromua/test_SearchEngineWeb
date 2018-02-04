@@ -30,7 +30,7 @@ Get document:
 Find documents:
 <form method="get" action="${pageContext.request.contextPath}/findDocuments">
     Query:
-    <input type="text" name="key" value="key">
+    <input type="text" name="query" value="query">
     <br>
     <input type="submit" value="Submit">
 </form>
