@@ -1,7 +1,6 @@
 package com.plb.test.searchengine.web;
 
 
-import com.plb.test.searchengine.exceptions.DocumentAddingException;
 import com.plb.test.searchengine.searchengineclient.SearchEngineClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +32,7 @@ public class WebController {
     }
 
     @RequestMapping(path="addDocument", method = RequestMethod.POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
-    public String addDocument(String key, String value) throws DocumentAddingException {
+    public String addDocument(String key, String value) {
         searchEngineClient.addDocument(key, value);
         return "redirect:/";
     }
@@ -42,7 +41,6 @@ public class WebController {
     @RequestMapping(value = "getDocument", method = RequestMethod.GET, produces = TEXT_PLAIN_VALUE)
     public String getDocument(String key, HttpServletResponse response) {
         String document = searchEngineClient.getDocument(key);
-        //TODO
         if (null == document) {
             response.setStatus(404);
             return "";

@@ -1,6 +1,5 @@
 package com.plb.test.searchengine.searchengineclient;
 
-import com.plb.test.searchengine.exceptions.DocumentAddingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -46,7 +45,7 @@ public class SearchEngineRestClient implements SearchEngineClient {
     }
 
     @Override
-    public void addDocument(String key, String value) throws DocumentAddingException {
+    public void addDocument(String key, String value) {
         URI documentUrl = buildDocumentUrl(key);
 
         HttpHeaders headers = new HttpHeaders();
@@ -54,10 +53,9 @@ public class SearchEngineRestClient implements SearchEngineClient {
         HttpEntity<String> entity = new HttpEntity<>(value, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(documentUrl, PUT, entity, String.class);
-        //ResponseEntity<String> response = restTemplate.getForEntity(documentUrl, String.class);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new DocumentAddingException(response.getStatusCode().getReasonPhrase());
+            throw new RuntimeException(response.getStatusCode().getReasonPhrase());
         }
     }
 
@@ -70,7 +68,6 @@ public class SearchEngineRestClient implements SearchEngineClient {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(documentUrl, GET, entity, String.class);
-        //ResponseEntity<String> response = restTemplate.getForEntity(documentUrl, String.class);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             return null;
@@ -90,7 +87,6 @@ public class SearchEngineRestClient implements SearchEngineClient {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String[]> response = restTemplate.exchange(queryUrl, GET, entity, String[].class);
-        //ResponseEntity<String> response = restTemplate.getForEntity(documentUrl, String.class);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             return null;
