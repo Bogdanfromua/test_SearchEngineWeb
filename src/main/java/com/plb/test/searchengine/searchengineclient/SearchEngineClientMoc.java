@@ -1,4 +1,4 @@
-package com.plb.test.searchengine;
+package com.plb.test.searchengine.searchengineclient;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

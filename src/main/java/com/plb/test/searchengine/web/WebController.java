@@ -1,6 +1,8 @@
-package com.plb.test.searchengine;
+package com.plb.test.searchengine.web;
 
 
+import com.plb.test.searchengine.exceptions.DocumentAddingException;
+import com.plb.test.searchengine.searchengineclient.SearchEngineClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +30,7 @@ public class WebController {
 
     @ResponseBody
     @RequestMapping(path="addDocument", method = RequestMethod.POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
-    public void addDocument(String key, String value) {
+    public void addDocument(String key, String value) throws DocumentAddingException {
         searchEngineClient.addDocument(key, value);
     }
 
