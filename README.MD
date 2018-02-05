@@ -27,3 +27,6 @@ http://localhost:8080
 ```
 - port - same port as provided by -Dserver.port option 
 - login with user and password provided by corresponding service run options ("user" and "password")
+
+### Use from IDE:
+IDEA do not support rung/debug springBoot with JSP pages with default configuration. So application must be run explicit by java -jar.
