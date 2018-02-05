@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -52,10 +53,10 @@ public class SearchEngineRestClient implements SearchEngineClient {
         headers.setContentType(TEXT_PLAIN);
         HttpEntity<String> entity = new HttpEntity<>(value, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(documentUrl, PUT, entity, String.class);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException(response.getStatusCode().getReasonPhrase());
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(documentUrl, PUT, entity, String.class);
+        } catch (RestClientException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -67,9 +68,10 @@ public class SearchEngineRestClient implements SearchEngineClient {
         headers.setAccept(singletonList(TEXT_PLAIN));
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(documentUrl, GET, entity, String.class);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
+        ResponseEntity<String> response;
+        try {
+            response = restTemplate.exchange(documentUrl, GET, entity, String.class);
+        } catch (RestClientException e) {
             return null;
         }
 
@@ -86,9 +88,10 @@ public class SearchEngineRestClient implements SearchEngineClient {
         headers.setAccept(singletonList(APPLICATION_JSON));
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String[]> response = restTemplate.exchange(queryUrl, GET, entity, String[].class);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
+        ResponseEntity<String[]> response;
+        try {
+            response = restTemplate.exchange(queryUrl, GET, entity, String[].class);
+        } catch (RestClientException e) {
             return null;
         }
 
